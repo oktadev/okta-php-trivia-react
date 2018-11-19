@@ -28,7 +28,7 @@ class App extends Component {
                 <Route path="/implicit/callback" component={ImplicitCallback} />
                 <SecureRoute path="/trivia" component={Trivia} />
             </Container>
-        </Security>
+            </Security>
       </Router>
     );
   }

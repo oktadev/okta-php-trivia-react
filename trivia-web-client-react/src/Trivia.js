@@ -6,6 +6,8 @@ import { API_BASE_URL, TRIVIA_ENDPOINT } from './config'
 
 import PlayerForm from './PlayerForm';
 import DeletePlayerButton from './DeletePlayerButton';
+import RightAnswerButton from './RightAnswerButton';
+import WrongAnswerButton from './WrongAnswerButton';
 
 export default withAuth(class Trivia extends Component {
 
@@ -20,6 +22,7 @@ export default withAuth(class Trivia extends Component {
         this.onAddition = this.onAddition.bind(this);
         this.onDelete = this.onDelete.bind(this);
         this.getQuestion = this.getQuestion.bind(this);
+        this.onAnswer = this.onAnswer.bind(this);
     }
 
     componentDidMount() {
@@ -73,6 +76,15 @@ export default withAuth(class Trivia extends Component {
         })
     }
 
+    onAnswer(id, data) {
+        let players = this.state.players
+        let player = players.findIndex(player => player.id === id)
+        players[player] = data
+        this.setState({
+            players: players
+        })
+    }
+
     render() {
         return (
             <div>
@@ -99,6 +111,8 @@ export default withAuth(class Trivia extends Component {
                                             <td>{player.answers}</td>
                                             <td>{player.points}</td>
                                             <td>
+                                                <RightAnswerButton onRightAnswer={this.onAnswer} playerId={player.id} />
+                                                <WrongAnswerButton onWrongAnswer={this.onAnswer} playerId={player.id} />
                                                 <DeletePlayerButton onDelete={this.onDelete} playerId={player.id} />
                                             </td>
                                         </tr>
