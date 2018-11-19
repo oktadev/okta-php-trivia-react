@@ -4,6 +4,9 @@ import { withAuth } from '@okta/okta-react';
 
 import { API_BASE_URL } from './config'
 
+import PlayerForm from './PlayerForm';
+import DeletePlayerButton from './DeletePlayerButton';
+
 export default withAuth(class Trivia extends Component {
 
     constructor(props) {
@@ -12,6 +15,8 @@ export default withAuth(class Trivia extends Component {
             players: null,
             isLoading: null
         };
+        this.onAddition = this.onAddition.bind(this);
+        this.onDelete = this.onDelete.bind(this);
     }
 
     componentDidMount() {
@@ -35,6 +40,21 @@ export default withAuth(class Trivia extends Component {
                 console.error(err);
             }
         }
+    }
+
+    onAddition(player) {
+        this.setState({
+            players: [...this.state.players, player]
+        })
+    }
+
+    onDelete(id) {
+        let players = this.state.players
+        let index = players.findIndex(player => player.id === id)
+        players.splice(index, 1)
+        this.setState({
+            players: players
+        })
     }
 
     render() {
@@ -63,12 +83,13 @@ export default withAuth(class Trivia extends Component {
                                             <td>{player.answers}</td>
                                             <td>{player.points}</td>
                                             <td>
-                                                Action buttons placeholder
+                                                <DeletePlayerButton onDelete={this.onDelete} playerId={player.id} />
                                             </td>
                                         </tr>
                             )}
                             </tbody>
                         </Table>
+                        <PlayerForm onAddition={this.onAddition} />
                     </div>
                 }
             </div>
