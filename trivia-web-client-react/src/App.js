@@ -1,28 +1,37 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { Container } from 'semantic-ui-react';
+
+import { Security, SecureRoute, ImplicitCallback } from '@okta/okta-react';
+
+import Navbar from './Navbar';
+import Home from './Home'
+import Trivia from './Trivia'
+
+const config = {
+    issuer: 'https://dev-354685.oktapreview.com/oauth2/default',
+    redirect_uri: window.location.origin + '/implicit/callback',
+    client_id: '0oahmoqq4dWSLtDhF0h7'
+}
 
 class App extends Component {
   render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
+        <Router>
+            <Security issuer={config.issuer}
+                   client_id={config.client_id}
+                redirect_uri={config.redirect_uri}
+            >
+            <Navbar />
+            <Container text style={{ marginTop: '7em' }}>
+                <Route path="/" exact component={Home} />
+                <Route path="/implicit/callback" component={ImplicitCallback} />
+                <SecureRoute path="/trivia" component={Trivia} />
+            </Container>
+        </Security>
+      </Router>
     );
   }
 }
 
-export default App;
+export default App
