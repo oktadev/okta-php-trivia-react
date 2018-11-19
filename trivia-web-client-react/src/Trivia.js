@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { Header, Message, Table } from 'semantic-ui-react';
+import { Header, Message, Table, Card, Button } from 'semantic-ui-react';
 import { withAuth } from '@okta/okta-react';
 
-import { API_BASE_URL } from './config'
+import { API_BASE_URL, TRIVIA_ENDPOINT } from './config'
 
 import PlayerForm from './PlayerForm';
 import DeletePlayerButton from './DeletePlayerButton';
@@ -13,14 +13,18 @@ export default withAuth(class Trivia extends Component {
         super(props);
         this.state = {
             players: null,
-            isLoading: null
+            isLoading: null,
+            question: null,
+            isQuestionLoading: null
         };
         this.onAddition = this.onAddition.bind(this);
         this.onDelete = this.onDelete.bind(this);
+        this.getQuestion = this.getQuestion.bind(this);
     }
 
     componentDidMount() {
-        this.getPlayers();
+        this.getPlayers()
+        this.getQuestion()
     }
 
     async getPlayers() {
@@ -39,6 +43,18 @@ export default withAuth(class Trivia extends Component {
                 this.setState({ isLoading: false });
                 console.error(err);
             }
+        }
+    }
+
+    async getQuestion() {
+        try {
+            this.setState({ isQuestionLoading: true });
+            const response = await fetch(TRIVIA_ENDPOINT);
+            const questions = await response.json();
+            this.setState({ question: questions[0], isQuestionLoading: false });
+        } catch (err) {
+            this.setState({ isQuestionLoading: false });
+            console.error(err);
         }
     }
 
@@ -90,6 +106,19 @@ export default withAuth(class Trivia extends Component {
                             </tbody>
                         </Table>
                         <PlayerForm onAddition={this.onAddition} />
+                    </div>
+                }
+                <Header as="h2">Current Question</Header>
+                {this.state.isQuestionLoading && <Message info header="Loading question..." />}
+                {this.state.question &&
+                    <div>
+                        <Card>
+                            <Card.Content>
+                              <Card.Header>{this.state.question.question}</Card.Header>
+                              <Card.Description> Correct answer: {this.state.question.answer}</Card.Description>
+                            </Card.Content>
+                        </Card>
+                        <Button type='button' onClick={this.getQuestion}>Refresh Question</Button>
                     </div>
                 }
             </div>

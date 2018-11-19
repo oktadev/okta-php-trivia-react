@@ -31,11 +31,11 @@ export default withAuth(class DeletePlayerButton extends Component {
             }
         });
 
-        const player = await response;
-        this.props.onDelete(this.state.id);
-        this.setState({
+        await response;
+        await this.setState({
             isUpdating: false
         });
+        this.props.onDelete(this.state.id);
     }
 
     render() {
