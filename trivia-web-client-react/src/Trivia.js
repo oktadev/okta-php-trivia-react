@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Header, Message, Table, Card, Button } from 'semantic-ui-react';
-import { withAuth } from '@okta/okta-react';
+import { withOktaAuth } from '@okta/okta-react';
 
 import { API_BASE_URL, TRIVIA_ENDPOINT } from './config'
 
@@ -9,7 +9,7 @@ import DeletePlayerButton from './DeletePlayerButton';
 import RightAnswerButton from './RightAnswerButton';
 import WrongAnswerButton from './WrongAnswerButton';
 
-export default withAuth(class Trivia extends Component {
+export default withOktaAuth(class Trivia extends Component {
 
     constructor(props) {
         super(props);
@@ -34,7 +34,7 @@ export default withAuth(class Trivia extends Component {
         if (! this.state.players) {
             try {
                 this.setState({ isLoading: true });
-                const accessToken = await this.props.auth.getAccessToken();
+                const accessToken = this.props.authState.accessToken;
                 const response = await fetch(API_BASE_URL + '/players', {
                     headers: {
                         Authorization: `Bearer ${accessToken}`,

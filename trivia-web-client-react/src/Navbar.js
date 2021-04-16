@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { withAuth } from '@okta/okta-react';
+import { withOktaAuth } from '@okta/okta-react';
 
 import { Container, Menu } from 'semantic-ui-react';
 
-export default withAuth(class Navbar extends Component {
+export default withOktaAuth(class Navbar extends Component {
     constructor(props) {
         super(props);
         this.state = { authenticated: null };
@@ -29,7 +29,7 @@ export default withAuth(class Navbar extends Component {
     }
 
     async checkAuthentication() {
-        const authenticated = await this.props.auth.isAuthenticated();
+        const authenticated = this.props.authState.isAuthenticated;
         if (authenticated !== this.state.authenticated) {
             this.setState({ authenticated });
         }

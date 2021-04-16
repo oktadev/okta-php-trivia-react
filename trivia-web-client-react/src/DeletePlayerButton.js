@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { Form, Button } from 'semantic-ui-react'
-import { withAuth } from '@okta/okta-react';
+import { withOktaAuth } from '@okta/okta-react';
 
 import { API_BASE_URL } from './config'
 
-export default withAuth(class DeletePlayerButton extends Component {
+export default withOktaAuth(class DeletePlayerButton extends Component {
 
     constructor (props) {
         super(props);
@@ -21,7 +21,7 @@ export default withAuth(class DeletePlayerButton extends Component {
             isUpdating: true
         });
 
-        const accessToken = await this.props.auth.getAccessToken();
+        const accessToken = this.props.authState.accessToken;
         const response = await fetch(API_BASE_URL + '/players/' + this.state.id, {
             method: 'DELETE',
             headers: {
