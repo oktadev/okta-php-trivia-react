@@ -2,30 +2,31 @@ import React, { Component } from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { Container } from 'semantic-ui-react';
 
-import { Security, SecureRoute, ImplicitCallback } from '@okta/okta-react';
+import { Security, SecureRoute, LoginCallback } from '@okta/okta-react';
+import { OktaAuth } from '@okta/okta-auth-js';
 
 import Navbar from './Navbar';
 import Home from './Home'
 import Trivia from './Trivia'
 
-const config = {
-    issuer: 'https://dev-354685.oktapreview.com/oauth2/default',
-    redirect_uri: window.location.origin + '/implicit/callback',
-    client_id: '0oahmoqq4dWSLtDhF0h7'
-}
-
 class App extends Component {
+  constructor(props) {
+    super(props);
+    this.oktaAuth = new OktaAuth({
+      issuer: 'https://dev-354685.oktapreview.com/oauth2/default',
+      clientId: '0oahmoqq4dWSLtDhF0h7',
+      redirectUri: window.location.origin + '/callback'
+    });
+  }
+
   render() {
     return (
         <Router>
-            <Security issuer={config.issuer}
-                   client_id={config.client_id}
-                redirect_uri={config.redirect_uri}
-            >
+            <Security oktaAuth={this.oktaAuth}>
             <Navbar />
             <Container text style={{ marginTop: '7em' }}>
                 <Route path="/" exact component={Home} />
-                <Route path="/implicit/callback" component={ImplicitCallback} />
+                <Route path="/callback" component={LoginCallback} />
                 <SecureRoute path="/trivia" component={Trivia} />
             </Container>
             </Security>

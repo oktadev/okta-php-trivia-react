@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { Button, Form, Message } from 'semantic-ui-react'
-import { withAuth } from '@okta/okta-react';
+import { withOktaAuth } from '@okta/okta-react';
 
 import { API_BASE_URL } from './config'
 
-export default withAuth(class PlayerForm extends Component {
+export default withOktaAuth(class PlayerForm extends Component {
 
     constructor (props) {
         super(props);
@@ -32,7 +32,7 @@ export default withAuth(class PlayerForm extends Component {
             errorMessage: ''
         });
 
-        const accessToken = await this.props.auth.getAccessToken();
+        const accessToken = this.props.authState.accessToken;
         const response = await fetch(API_BASE_URL + '/players', {
             method: 'POST',
             headers: {
